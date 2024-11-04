@@ -100,14 +100,5 @@ plt.savefig("support_by_methodology.png", format='png', dpi=300, bbox_inches='ti
 
 #plt.show()
 
-# Calculate overall average percentages for both candidates
-overall_avg_pct = filtered_candidates.groupby('candidate_name')['pct'].mean().reset_index()
 
-# Display overall average percentages
-print("Overall Average Support Percentages:")
-print(overall_avg_pct)
 
-# Determine the candidate with the highest overall percentage
-leading_candidate = overall_avg_pct.loc[overall_avg_pct['pct'].idxmax()]
-
-print(f"\nLeading Candidate Overall:\n{leading_candidate['candidate_name']} with an average support of {leading_candidate['pct']:.2f}%")
