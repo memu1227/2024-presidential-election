@@ -26,9 +26,11 @@ latest_polls = (
 
 # Filter for candidates
 filtered_candidates = latest_polls[latest_polls['candidate_name'].isin(['Kamala Harris', 'Donald Trump'])]
+
+average_pct_per_pollster = filtered_candidates.groupby(['pollster', 'candidate_name'])['pct'].mean().reset_index()
 party_colors = {'Kamala Harris': 'blue', 'Donald Trump': 'red'}
 
-# Support Over Time
+#Support Over Time
 current_year = datetime.datetime.now().year
 filtered_data = poll_data[(poll_data['candidate_name'].isin(['Kamala Harris', 'Donald Trump'])) &
     (poll_data['start_date'].dt.year == current_year)]
@@ -42,8 +44,9 @@ plt.xlabel("Date")
 plt.ylabel("Smoothed Support Percentage (%)")
 plt.title(f"Smoothed Support Percentage Over Time for Kamala Harris and Donald Trump ({current_year})")
 plt.legend(title="Candidate")
+plt.savefig("support_over_time.png", format='png', dpi=300, bbox_inches='tight')
 
-# Top Candidate by State
+#Top Candidate by State
 sorted_polls = poll_data.sort_values(
     by=['pollscore', 'transparency_score', 'end_date'], 
     ascending=[True, False, False]
@@ -62,8 +65,9 @@ plt.ylabel("Average Support Percentage (%)")
 plt.title("Top Candidate by Average Support Percentage in Each State (Latest High-Quality Polls)")
 plt.legend(title="Candidate")
 plt.tight_layout()
+plt.savefig("top_candidate_by_state.png", format='png', dpi=300, bbox_inches='tight')
 
-# Swing States Average Support
+#Swing States Average Support
 swing_states = ['Arizona', 'Georgia', 'Michigan', 'Nevada', 'North Carolina', 'Pennsylvania', 'Wisconsin']
 swing_state_avg = state_avg_pct[state_avg_pct['state'].isin(swing_states)]
 
@@ -75,15 +79,15 @@ plt.ylabel("Average Support Percentage (%)")
 plt.title("Average Support Percentage in Swing States for Kamala Harris and Donald Trump (Latest High-Quality Polls)")
 plt.legend(title="Candidate")
 plt.tight_layout()
+plt.savefig("latest_high_quality_swing_states.png", format='png', dpi=300, bbox_inches='tight')
 
 plt.show()
 
-# Calculate overall average percentages for both candidates for the current election cycle
-current_cycle_candidates = filtered_candidates[filtered_candidates['start_date'].dt.year == current_year]
-overall_avg_pct = current_cycle_candidates.groupby('candidate_name')['pct'].mean().reset_index()
+# Calculate overall average percentages for both candidates
+overall_avg_pct = filtered_candidates.groupby('candidate_name')['pct'].mean().reset_index()
 
 # Display overall average percentages
-print("Overall Average Support Percentages for the Current Election Cycle:")
+print("Overall Average Support Percentages:")
 print(overall_avg_pct)
 
 # Determine the candidate with the highest overall percentage
