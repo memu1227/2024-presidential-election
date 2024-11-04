@@ -98,7 +98,7 @@ plt.legend(title="Candidate")
 plt.tight_layout()
 plt.savefig("support_by_methodology.png", format='png', dpi=300, bbox_inches='tight')
 
-plt.show()
+#plt.show()
 
 # Calculate overall average percentages for both candidates
 overall_avg_pct = filtered_candidates.groupby('candidate_name')['pct'].mean().reset_index()
