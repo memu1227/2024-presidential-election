@@ -81,6 +81,23 @@ plt.legend(title="Candidate")
 plt.tight_layout()
 plt.savefig("latest_high_quality_swing_states.png", format='png', dpi=300, bbox_inches='tight')
 
+# Calculate average support percentages by methodology
+#drop na values
+poll_data = poll_data.dropna(subset=['pct', 'methodology'])
+
+methodology_avg_pct = latest_polls[latest_polls['candidate_name'].isin(['Kamala Harris', 'Donald Trump'])].groupby(['methodology', 'candidate_name'])['pct'].mean().reset_index()
+
+# Create a bar plot for average support percentages by methodology
+plt.figure(figsize=(16, 10))
+sns.barplot(data=methodology_avg_pct, x='methodology', y='pct', hue='candidate_name', palette=party_colors)
+plt.xticks(rotation=80)
+plt.xlabel("Polling Methodology")
+plt.ylabel("Average Support Percentage (%)")
+plt.title("Average Support Percentage by Polling Methodology for Kamala Harris and Donald Trump")
+plt.legend(title="Candidate")
+plt.tight_layout()
+plt.savefig("support_by_methodology.png", format='png', dpi=300, bbox_inches='tight')
+
 plt.show()
 
 # Calculate overall average percentages for both candidates
