@@ -6,6 +6,7 @@ from scipy.stats import norm
 import geopandas as gpd
 import seaborn as sns
 from matplotlib.patches import Patch
+from matplotlib.table import Table
 
 # Define electoral votes by state
 electoral_votes = {
@@ -79,6 +80,10 @@ trump_std = results_df['Donald Trump'].std()
 trump_ci_lower = trump_mean - 1.96 * trump_std
 trump_ci_upper = trump_mean + 1.96 * trump_std
 
+#Print the confidence intervals:
+print(f'Kamala Harris confidence interval: {kamala_ci_lower} to {kamala_ci_upper}')
+print(f'Donald Trump confidence interval: {trump_ci_lower} to {trump_ci_upper}')
+
 # Plot the density of electoral votes with confidence intervals
 plt.figure(figsize=(10, 6))
 
@@ -98,6 +103,7 @@ plt.xlabel("Electoral Votes")
 plt.ylabel("Density")
 plt.legend()
 plt.title("Electoral Vote Distribution with 95% Confidence Intervals")
+plt.savefig('electoral_vote_distribution.png',format='png', dpi=300, bbox_inches='tight')
 plt.show()
 
 
@@ -130,9 +136,9 @@ fig = plt.figure(figsize=(15, 8))
 gs = plt.GridSpec(2, 20, height_ratios=[4, 1])
 
 # Create main map and inset axes with adjusted positions
-ax_main = fig.add_subplot(gs[0, :16])     # Main map takes up most of the space
-ax_ak = fig.add_subplot(gs[1, 13:16])       # Alaska to the right
-ax_hi = fig.add_subplot(gs[1, 14:17])       # Hawaii below Alaska
+ax_main = fig.add_subplot(gs[0:1, :20])     
+ax_ak = fig.add_subplot(gs[0, 17:18])       
+ax_hi = fig.add_subplot(gs[0, 18:19])       
 
 # Plot function remains the same
 def plot_state_map(ax, data, title=None):
@@ -177,7 +183,7 @@ for idx, row in continental.iterrows():
     )
 
 # Add labels for Alaska and Hawaii with smaller font
-for ax, state in [(ax_ak, 'Alaska'), (ax_hi, 'Hawaii')]:
+for ax, state, xytext_offset in [(ax_ak, 'Alaska', (-15, -8)), (ax_hi, 'Hawaii', (15, -5))]:
     state_data = gdf[gdf['NAME'] == state].iloc[0]
     centroid = state_data['geometry'].centroid
     electoral_vote = electoral_votes.get(state, 0)
@@ -186,6 +192,8 @@ for ax, state in [(ax_ak, 'Alaska'), (ax_hi, 'Hawaii')]:
     ax.annotate(
         f'{state[:2]}\n{electoral_vote}',
         xy=(centroid.x, centroid.y),
+        xytext=xytext_offset,  # Offset the text position
+        textcoords='offset points',
         ha='center',
         va='center',
         fontsize=6,
@@ -227,7 +235,7 @@ legend_elements = [
 ]
 ax_main.legend(
     handles=legend_elements,
-    loc='lower right',
+    loc='upper right',
     title='Projected Winner',
     frameon=True,
     framealpha=0.8,
@@ -243,5 +251,6 @@ plt.suptitle('Projected Electoral Votes by State', fontsize=14, y=0.95)
 plt.tight_layout()
 
 # Save the figure
-plt.savefig('electoral_map_improved.png', dpi=300, bbox_inches='tight', pad_inches=0.1)
+plt.savefig('electoral_map.png', dpi=300, bbox_inches='tight', pad_inches=0.1)
 plt.show()
+
