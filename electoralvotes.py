@@ -223,7 +223,7 @@ summary_text = (
 )
 
 # Add summary box with a nice background
-props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='gray')
+props = dict(boxstyle='round', facecolor='white', alpha=0.8, edgecolor='purple')
 ax_main.text(0.02, 0.02, summary_text, transform=ax_main.transAxes,
             fontsize=8, verticalalignment='bottom',
             bbox=props, family='monospace')
